@@ -6,6 +6,7 @@
 
 var ReactNative = require('react-native')
 var React = require('react')
+import Icon from 'react-native-vector-icons/Ionicons'
 
 var StyleSheet = ReactNative.StyleSheet
 var Text = ReactNative.Text
@@ -32,41 +33,60 @@ var List = React.createClass({
 
 	return {
 	    dataSource: ds.cloneWithRows([{
-        "_id":"35000019800424355X","thumb":"http://dummyimage.com/1200x600/d4d299)","video_address":"http://www.imooc.com/video/10427"
+        "_id":"230000199110204818","thumb":"https://facebook.github.io/react/img/logo_og.png","title":"测试内容y22c","video_address":"http://www.imooc.com/video/10427"
     }
     ,
     {
-        "_id":"650000199306250486","thumb":"http://dummyimage.com/1200x600/390620)","video_address":"http://www.imooc.com/video/10427"
+        "_id":"140000197605209812","thumb":"https://facebook.github.io/react/img/logo_og.png","title":"测试内容y22c","video_address":"http://www.imooc.com/video/10427"
+    }
+    ,
+    {
+        "_id":"140000197210217797","thumb":"https://facebook.github.io/react/img/logo_og.png","title":"测试内容y22c","video_address":"http://www.imooc.com/video/10427"
+    }
+    ,
+    {
+        "_id":"110000200606076811","thumb":"https://facebook.github.io/react/img/logo_og.png","title":"测试内容y22c","video_address":"http://www.imooc.com/video/10427"
+    }
+    ,
+    {
+        "_id":"810000197403180417","thumb":"https://facebook.github.io/react/img/logo_og.png","title":"测试内容y22c","video_address":"http://www.imooc.com/video/10427"
+    }
+    ,
+    {
+        "_id":"640000201201279635","thumb":"https://facebook.github.io/react/img/logo_og.png","title":"测试内容y22c","video_address":"http://www.imooc.com/video/10427"
     }]),
-	}
+	} 
   },
   
   renderRow: function(row) {
   	return (
 	  	<TouchableHighlight>
 	  		<View style={styles.item}>
-	  			<Text style={styles.title}>{row._id}</Text>
+	  			<Text style={styles.title}>{row.title}</Text>
 	  			<Image
 	  				source={{uri: row.thumb}}
 	  				style={styles.thumb}
 	  			>
-	  				<Image
-				      style={styles.play}
-				      source={require('../.././static/images/play.png')}
+	  				<Icon
+				    	name='ios-play'
+				    	size={28}
+				    	style={styles.play}
 				    />
 	  			</Image>
 	  			<View style={styles.itemFooter}>
 	  				<View style={styles.handleBox}>
-	  					<Image
-					      style={styles.up}
-					      source={require('../.././static/images/like.png')}
+	  					<Icon
+					    	name='ios-heart-outline'
+					    	size={28}
+					    	style={styles.up}
 					    />
 	  					<Text style={styles.handleText}>like</Text>
 	  				</View>
 	  				<View style={styles.handleBox}>
-	  					<Image
-					      style={styles.commentIcon}
-					      source={require('../.././static/images/comments.png')}
+	  					<Icon
+					    	name='ios-chatbubbles-outline'
+					    	size={28}
+					    	style={styles.commentIcon}
 					    />
 	  					<Text style={styles.handleText}>comment</Text>
 	  				</View>
@@ -87,6 +107,7 @@ var List = React.createClass({
       		dataSource={this.state.dataSource}
       		renderRow={this.renderRow}
       		enableEmptySections={true}
+      		automaticallyAdjustContentInsets={false}
       	/>
       </View>
     )
@@ -98,11 +119,13 @@ var styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5FCFF',
   },
+
   header: {
   	paddingTop: 25,
   	paddingBottom: 12,
   	backgroundColor: '#ee735c'
   },
+
   headerTitle: {
   	color: '#fff',
   	fontSize: 16,
