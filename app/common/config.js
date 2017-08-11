@@ -10,6 +10,7 @@ module.exports = {
 	},
 	api: {
 		base: '',
-		creations: ''
+		creations: 'api/creations',
+		up: 'api/up'
 	}
 }

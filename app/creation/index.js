@@ -9,6 +9,7 @@ var React = require('react')
 import Icon from 'react-native-vector-icons/Ionicons'
 var request = require('../common/request')
 var config = require('../common/config')
+var Detail = require('./detail')
 
 var StyleSheet = ReactNative.StyleSheet
 var Text = ReactNative.Text
@@ -19,6 +20,7 @@ var Image = ReactNative.Image
 var Dimensions = ReactNative.Dimensions
 var RefreshControl = ReactNative.RefreshControl
 var ActivityIndicatorIOS = ReactNative.ActivityIndicatorIOS
+var AlertIOS = ReactNative.AlertIOS
 
 var width = Dimensions.get('window').width
 
@@ -40,13 +42,44 @@ var Item = React.createClass({
 		var row = this.props.row
 
 		return {
+			up: row.voted,
 			row: row
 		}
-	}
-	
+	},
+
+	_up() {
+		var that = this
+		var up = !this.state.up
+		var row = this.state.row
+		var url = config.api.base + config.api.up
+
+		var body = {
+			id: row._id,
+			up: up ? 'yes' : 'no',
+			accessToken: 'abcee'
+		}
+
+		request.post(url, body)
+			.then(function(data) {
+				if (data && data.success) {
+					that.setState({
+						up: up
+					})
+				} else {
+					AlertIOS.alert('up failed')
+				}
+			})
+			.catch(function(err) {
+				console.log(err)
+				AlertIOS.alert('up failed')
+			})
+	},
+
 	render() {
+		var row = this.state.row
+
 		return(
-		  	<TouchableHighlight>
+		  	<TouchableHighlight onPress={this.props.onSelect}>
 		  		<View style={styles.item}>
 		  			<Text style={styles.title}>{row.title}</Text>
 		  			<Image
@@ -62,22 +95,22 @@ var Item = React.createClass({
 		  			<View style={styles.itemFooter}>
 		  				<View style={styles.handleBox}>
 		  					<Icon
-						    	name='ios-heart-outline'
+						    	name={this.state.up ? 'ios-heart' : 'ios-heart-outline'}
 						    	size={28}
-						    	style={styles.up}
+						    	style={[styles.up, this.state.up ? null : styles.down]}
 						    />
-		  					<Text style={styles.handleText}>like</Text>
+		  					<Text style={styles.handleText} onPress={this._up}>like</Text>
 		  				</View>
 		  				<View style={styles.handleBox}>
 		  					<Icon
 						    	name='ios-chatbubbles-outline'
 						    	size={28}
+						    	onPress={this._up}
 						    	style={styles.commentIcon}
 						    />
 		  					<Text style={styles.handleText}>comment</Text>
 		  				</View>
 		  			</View>
-
 		  		</View>
 		  	</TouchableHighlight>
 		)
@@ -120,7 +153,10 @@ var List = React.createClass({
   },
   
   _renderRow: function(row) {
-  	return <Item row={row} />
+  	return <Item 
+  		key={row._id} 
+  		onSelect={() => this._loadPage(row)} 
+  		row={row} />
   },
 
   componentDidMount: function() {
@@ -183,7 +219,7 @@ var List = React.createClass({
       			isRefreshing: false
       		})
       	}
-        console.error(error);
+        console.error(error)
       })
   },
 
@@ -205,7 +241,7 @@ var List = React.createClass({
   	if (!this._hasMore() && cachedResults.total != 0) {
   		return (
   			<View style={styles.loadingMore}>
-  				<Text style={styles.loadingText}No more</Text>
+  				<Text style={styles.loadingText}>No more</Text>
   			</View>
   		)
   	}
@@ -217,6 +253,16 @@ var List = React.createClass({
   	return <ActivityIndicatorIOS
   		style={[styles.centering, {height: 80}]}
   	/>
+  },
+
+  _loadPage(row) {
+  	this.props.navigator.push({ 
+  		name: 'detail',
+  		component: Detail,
+  		params: {
+			row: row
+  		}
+  	})
   },
   
   _onRefresh() {
@@ -328,9 +374,14 @@ var styles = StyleSheet.create({
   	color: '#333'
   },
 
-  up: {
+  down: {
   	fontSize: 22,
   	color: '#333'
+  },
+
+  up: {
+  	fontSize: 22,
+  	color: '#ed7b66'
   },
 
   commentIcon: {

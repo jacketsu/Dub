@@ -8,12 +8,12 @@ var ReactNative = require('react-native')
 var React = require('react')
 
 
-var Component = React.Component
 var AppRegistry = ReactNative.AppRegistry
 var StyleSheet = ReactNative.StyleSheet
 var Text = ReactNative.Text
 var View = ReactNative.View
 var TabBarIOS = ReactNative.TabBarIOS
+var NavigatorIOS = ReactNative.NavigatorIOS
 
 // import React, { Component } from 'react';
 // import {
@@ -58,7 +58,21 @@ var dogDubApp = React.createClass({
               selectedTab: 'list',
             });
           }}>
-          <List />
+          <NavigatorIOS
+            initialRoute={{
+              name: 'list',
+              component: List
+            }}
+            configureScene={(route) => {
+              return NavigatorIOS.SceneConfigs.FloatFromRight
+            }}
+            renderScene={(route, navigator) => {
+              var Component = route.component
+
+              return <Component {...route.params} navigator={navigator}
+                />
+            }}
+          />
         </TabBarIOS.Item>
         <TabBarIOS.Item
           icon={require('./static/images/video.png')}
