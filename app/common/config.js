@@ -11,6 +11,7 @@ module.exports = {
 	api: {
 		base: '',
 		creations: 'api/creations',
+		comment: 'api/comments',
 		up: 'api/up'
 	}
 }
