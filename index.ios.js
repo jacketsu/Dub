@@ -8,13 +8,14 @@ var ReactNative = require('react-native')
 var React = require('react')
 
 
+
 var AppRegistry = ReactNative.AppRegistry
 var StyleSheet = ReactNative.StyleSheet
 var Text = ReactNative.Text
 var View = ReactNative.View
 var TabBarIOS = ReactNative.TabBarIOS
 var NavigatorIOS = ReactNative.NavigatorIOS
-
+var AsyncStorage = ReactNative.AsynStorage
 // import React, { Component } from 'react';
 // import {
 //   AppRegistry,
@@ -26,14 +27,42 @@ var NavigatorIOS = ReactNative.NavigatorIOS
 var List = require('./app/creation/index')
 var Edit = require('./app/edit/index')
 var Account = require('./app/account/index')
+var Login = require('./app/account/login')
 
 
 var dogDubApp = React.createClass({
   getInitialState: function() {
     console.log('child', 'getInitialState')
     return {
-      selectedTab: 'list'
+      user: null,
+      selectedTab: 'list',
+      logined: false
     }
+  },
+
+  componentDidMount() {
+    this._asyncAppStatus()
+  },
+
+  _asyncAppStatus() {
+    AsyncStorage.getItem('user')
+      .then((data) => {
+        var user
+        var newState = {}
+
+        if (data) {
+          user = JSON.parse(data)
+        }
+
+        if (user && user.accessToken) {
+          newState.user = user
+          newState.logined = true
+        } else {
+          newState.logined = false
+        }
+
+        that.setState(newState)
+      })
   },
 
   _renderContent: function(color: string, pageText: string, num?: number) {
@@ -45,7 +74,22 @@ var dogDubApp = React.createClass({
     );
   },
 
+  _afterLogin(user) {
+    user = JSON.stringify(user)
+    AsyncStorage.setItem('user', user)
+      .then(() => {
+        that.setState({
+          logined: true,
+          user: user
+        })
+      })
+  },
+
   render: function() {
+    if (!this.state.logined) {
+      return <Login afterLogin={this._afterLogin} />
+    }
+
     return (
       <TabBarIOS
         tintColor="#ee735c">

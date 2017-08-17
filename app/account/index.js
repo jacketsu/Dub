@@ -6,6 +6,7 @@
 
 var ReactNative = require('react-native')
 var React = require('react')
+var Icon = require('react-native-vector-icons/Ionicons')
 var StyleSheet = ReactNative.StyleSheet
 var Text = ReactNative.Text
 var View = ReactNative.View
